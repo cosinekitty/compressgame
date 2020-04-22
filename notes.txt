@@ -1,0 +1,5 @@
+The original Word list was downloaded from:
+http://www-personal.umich.edu/~jlawler/wordlist.html
+
+I eliminated all words that did not consist solely of
+alphabetic characters a-z.
