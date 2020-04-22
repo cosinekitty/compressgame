@@ -1,0 +1,12 @@
+#!/bin/bash
+Fail()
+{
+    echo "FAIL($0): $1"
+    exit 1
+}
+
+rm -f words.bz2 words.gz words.zip
+bzip2 -c --best words.txt > words.bz2 || Fail "Error in bzip2"
+gzip -c --best words.txt > words.gz || Fail "Error in gzip"
+zip -9 words.zip words.txt
+exit 0
