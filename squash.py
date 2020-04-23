@@ -72,8 +72,7 @@ class HuffmanEncoder:
         # Recursively visit the tree to compute the bit string for each symbol.
         # The result is a dictionary such that encoding[symbol] = bitstring,
         # where bitstring is a string containing 0 and 1 characters like '10110100'.
-        self.encoding = tree[0].MakeEncoding({}, '')
-        return self
+        return tree[0].MakeEncoding({}, '')
 
 #--------------------------------------------------------------------
 
@@ -90,19 +89,19 @@ class Squash_Huffman:
         return 'huffman'
 
     def Compress(self, words):
-        repeatHuff, tailHuff, charHuff = self._HuffTables(words)
+        repeatCode, tailCode, charCode = self._HuffmanCodes(words)
         pw = ''
         for w in words:
             prefix = self._LettersInCommon(pw, w)
-            bits = repeatHuff.encoding[prefix]
+            bits = repeatCode[prefix]
             tail = len(w) - prefix
-            bits += tailHuff.encoding[tail]
+            bits += tailCode[tail]
             for c in w[prefix:]:
-                bits += charHuff.encoding[c]
+                bits += charCode[c]
             print(bits)
             pw = w
 
-    def _HuffTables(self, words):
+    def _HuffmanCodes(self, words):
         repeatHuff = HuffmanEncoder()
         tailHuff = HuffmanEncoder()
         charHuff = HuffmanEncoder()
