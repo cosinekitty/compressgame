@@ -32,7 +32,10 @@ class HuffmanNode:
         # Allows nodes to be sorted by count
         return self.count < other.count
 
-    def MakeEncoding(self, encoding, bitstring):
+    def MakeEncoding(self, encoding = {}, bitstring = ''):
+        # Recursively visit the tree to compute the bit string for each symbol.
+        # The result is a dictionary such that encoding[symbol] = bitstring,
+        # where bitstring is a string containing 0 and 1 characters like '10110100'.
         if self.symbol is not None:
             encoding[self.symbol] = bitstring
         if self.left is not None:
@@ -41,6 +44,16 @@ class HuffmanNode:
             self.right.MakeEncoding(encoding, bitstring + '1')
         return encoding
 
+    def TreeTuple(self):
+        # Convert the tree into a tuple format.
+        # Each internal node becomes a tuple (left, right).
+        # Each leaf node is just the symbol by itself.
+        if self.symbol is not None:
+            return self.symbol
+        return (self.left.TreeTuple(), self.right.TreeTuple())
+
+    def SourceCode(self):
+        return repr(self.TreeTuple()).replace(' ', '')
 
 class HuffmanEncoder:
     def __init__(self):
@@ -70,10 +83,8 @@ class HuffmanEncoder:
         if len(tree) != 1:
             raise Exception('Huffman encoder has {} remaining nodes.'.format(len(tree)))
 
-        # Recursively visit the tree to compute the bit string for each symbol.
-        # The result is a dictionary such that encoding[symbol] = bitstring,
-        # where bitstring is a string containing 0 and 1 characters like '10110100'.
-        return tree[0].MakeEncoding({}, '')
+        # The single remaining node is the root node of the tree.
+        return tree[0]
 
 #--------------------------------------------------------------------
 
@@ -90,7 +101,10 @@ class Squash_Huffman:
         return 'huffman'
 
     def Compress(self, words):
-        repeatCode, tailCode, charCode = self._HuffmanCodes(words)
+        repeatRoot, tailRoot, charRoot = self._HuffmanCodes(words)
+        repeatCode = repeatRoot.MakeEncoding()
+        tailCode = tailRoot.MakeEncoding()
+        charCode = charRoot.MakeEncoding()
         pw = ''
         bits = ''
         for w in words:
@@ -130,8 +144,11 @@ class Squash_Huffman:
             if lineLength == 80:
                 text += '\n'
                 lineLength = 0
-        print(text)
-        return "r'''\n" + text + "'''\n"
+        source = "{'Repeat':" + repeatRoot.SourceCode() + ",\n"
+        source += "'Tail':" + tailRoot.SourceCode() + ",\n"
+        source += "'Char':" + charRoot.SourceCode() + ",\n"
+        source += "'BitStream':r'''\n" + text + "'''}\n"
+        return source
 
     def _HuffmanCodes(self, words):
         repeatHuff = HuffmanEncoder()
