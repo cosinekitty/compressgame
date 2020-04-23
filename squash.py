@@ -2,18 +2,27 @@
 import sys
 import os
 
+CommonHeadCode = '#!/usr/bin/env python3\n'
+
+CommonTailCode = r'''
+if __name__ == "__main__":
+    print(Expand())
+'''
+
 class Squash_PlainText:
     def Name(self):
-        return 'PlainText'
+        return 'plaintext'
 
     def Compress(self, words):
-        return 'print("Not yet implemented.")'
+        return "r'''" + '\n'.join(words) + "'''\n"
 
 AlgorithmList = [
     Squash_PlainText()
 ]
 
 if __name__ == '__main__':
+    StubDirName = 'stubs'
+
     # Create a directory to hold the generated source code.
     OutputDirName = 'output'
     if not os.path.exists(OutputDirName):
@@ -32,11 +41,14 @@ if __name__ == '__main__':
     print('Read {} words, {} bytes.'.format(len(words), len(text)))
 
     for algorithm in AlgorithmList:
-        name = algorithm.Name()
-        sourceCode = algorithm.Compress(words)
-        filename = os.path.join(OutputDirName, name + '.py')
-        print('{:9d} {:s}'.format(len(sourceCode), filename))
-        with open(filename, 'wt') as outfile:
-            outfile.write(sourceCode)
+        compressedDataCode = 'Data = ' + algorithm.Compress(words)
+        stubFileName = os.path.join(StubDirName, algorithm.Name() + '.py')
+        with open(stubFileName, 'rt') as infile:
+            stubCode = infile.read()
+        targetFileName = os.path.join(OutputDirName, algorithm.Name() + '.py')
+        code = CommonHeadCode + compressedDataCode + stubCode + CommonTailCode
+        with open(targetFileName, 'wt') as outfile:
+            outfile.write(code)
+        print('{:9d} {:s}'.format(len(code), targetFileName))
 
     sys.exit(0)

@@ -1,0 +1,10 @@
+#!/bin/bash
+Fail()
+{
+    echo "FAIL($0): $1"
+    exit 1
+}
+
+./squash.py || Fail "Error in squash.py"
+
+exit 0

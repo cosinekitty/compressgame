@@ -1,5 +1,6 @@
 .vscode/
 output/
+stubs/
 *.gz
 *.bz2
 *.zip
