@@ -107,13 +107,18 @@ class Squash_Huffman:
         alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
         text = ''
         lineLength = 0
-        while len(bits) > 0:
-            # If there are fewer than 6 bits remaining, pad with '0' on the end.
-            while len(bits) < 6:
-                bits += '0'
+        pos = 0
+        nbits = len(bits)
+        while pos < nbits:
             # Remove the next 6 bits.
-            chunk = bits[:6]
-            bits = bits[6:]
+            # If there are fewer than 6 bits remaining, pad with '0' on the end.
+            if pos + 6 > nbits:
+                chunk = bits[pos:]
+                while len(chunk) < 6:
+                    chunk += '0'
+            else:
+                chunk = bits[pos:6+pos]
+            pos += 6
             # Compute the integer index from 'chunk'
             index = 0
             for b in chunk:

@@ -1,2 +1,2 @@
 def Expand():
-    return ''
+    a = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
