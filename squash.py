@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+import subprocess
 
 CommonHeadCode = '#!/usr/bin/env python3\n'
 
@@ -50,5 +51,10 @@ if __name__ == '__main__':
         with open(targetFileName, 'wt') as outfile:
             outfile.write(code)
         print('{:9d} {:s}'.format(len(code), targetFileName))
+        result = subprocess.run([sys.executable, targetFileName], check=True, stdout=subprocess.PIPE)
+        check = result.stdout.decode('utf-8')
+        if check != text:
+            print('FAILURE: Generated text does not match original.')
+            sys.exit(1)
 
     sys.exit(0)
