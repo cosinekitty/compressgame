@@ -96,9 +96,9 @@ class Squash_Huffman:
         for w in words:
             prefix = self._LettersInCommon(pw, w)
             bits += repeatCode[prefix]
-            tail = len(w) - prefix
-            bits += tailCode[tail]
-            for c in w[prefix:]:
+            tail = w[prefix:]
+            bits += tailCode[len(tail)]
+            for c in tail:
                 bits += charCode[c]
             pw = w
 
