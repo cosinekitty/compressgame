@@ -32,16 +32,19 @@ class HuffmanNode:
         # Allows nodes to be sorted by count
         return self.count < other.count
 
-    def MakeEncoding(self, encoding = {}, bitstring = ''):
+    def MakeEncoding(self):
+        return self._MakeEncoding({}, '')
+
+    def _MakeEncoding(self, encoding, bitstring):
         # Recursively visit the tree to compute the bit string for each symbol.
         # The result is a dictionary such that encoding[symbol] = bitstring,
         # where bitstring is a string containing 0 and 1 characters like '10110100'.
         if self.symbol is not None:
             encoding[self.symbol] = bitstring
         if self.left is not None:
-            self.left.MakeEncoding(encoding, bitstring + '0')
+            self.left._MakeEncoding(encoding, bitstring + '0')
         if self.right is not None:
-            self.right.MakeEncoding(encoding, bitstring + '1')
+            self.right._MakeEncoding(encoding, bitstring + '1')
         return encoding
 
     def TreeTuple(self):
@@ -147,6 +150,7 @@ class Squash_Huffman:
         source = "{'Repeat':" + repeatRoot.SourceCode() + ",\n"
         source += "'Tail':" + tailRoot.SourceCode() + ",\n"
         source += "'Char':" + charRoot.SourceCode() + ",\n"
+        source += "'NumWords':{:d},\n".format(len(words))
         source += "'BitStream':r'''\n" + text + "'''}\n"
         return source
 
