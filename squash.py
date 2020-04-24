@@ -119,6 +119,14 @@ class Squash_Huffman:
                 bits += charCode[c]
             pw = w
 
+        source = "{'Repeat':" + repeatRoot.SourceCode() + ",\n"
+        source += "'Tail':" + tailRoot.SourceCode() + ",\n"
+        source += "'Char':" + charRoot.SourceCode() + ",\n"
+        source += "'NumWords':{:d},\n".format(len(words))
+        source += "'BitStream':r'''\n" + self._EncodeBits(bits) + "'''}\n"
+        return source
+
+    def _EncodeBits(self, bits):
         # Encode the 'bits' string, that contains a sequence of '0' and '1' chars,
         # into base64. Each base64 output character represents 6 bits, because 2**6 == 64.
         alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
@@ -147,12 +155,7 @@ class Squash_Huffman:
             if lineLength == 80:
                 text += '\n'
                 lineLength = 0
-        source = "{'Repeat':" + repeatRoot.SourceCode() + ",\n"
-        source += "'Tail':" + tailRoot.SourceCode() + ",\n"
-        source += "'Char':" + charRoot.SourceCode() + ",\n"
-        source += "'NumWords':{:d},\n".format(len(words))
-        source += "'BitStream':r'''\n" + text + "'''}\n"
-        return source
+        return text
 
     def _HuffmanCodes(self, words):
         repeatHuff = HuffmanEncoder()
