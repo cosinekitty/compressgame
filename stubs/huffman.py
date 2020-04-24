@@ -23,15 +23,15 @@ def Huffman(reader, node):
     return node
 
 def Expand():
-    reader = BitReader(Data['BitStream'])
+    reader = BitReader(Bits)
     pw = ''
     wlist = []
-    for w in range(Data['NumWords']):
-        repeatLen = Huffman(reader, Data['Repeat'])
-        tailLen = Huffman(reader, Data['Tail'])
+    for w in range(NumWords):
+        repeatLen = Huffman(reader, Repeat)
+        tailLen = Huffman(reader, Tail)
         w = pw[:repeatLen]
         for _ in range(tailLen):
-            w += Huffman(reader, Data['Char'])
+            w += Huffman(reader, Char)
         wlist.append(w)
         pw = w
     return '\n'.join(wlist)

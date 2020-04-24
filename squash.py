@@ -17,7 +17,7 @@ class Squash_PlainText:
         return 'plaintext'
 
     def Compress(self, words):
-        return "r'''" + '\n'.join(words) + "'''\n"
+        return "Data = r'''" + '\n'.join(words) + "'''\n"
 
 #--------------------------------------------------------------------
 
@@ -109,11 +109,11 @@ class Squash_Huffman:
         tailCode = tailRoot.MakeEncoding()
         charCode = charRoot.MakeEncoding()
         bits = self._Encode(words, repeatCode, tailCode, charCode)
-        source = "{'Repeat':" + repeatRoot.SourceCode() + ",\n"
-        source += "'Tail':" + tailRoot.SourceCode() + ",\n"
-        source += "'Char':" + charRoot.SourceCode() + ",\n"
-        source += "'NumWords':{:d},\n".format(len(words))
-        source += "'BitStream':r'''\n" + self._Base64(bits) + "'''}\n"
+        source = "Repeat=" + repeatRoot.SourceCode() + "\n"
+        source += "Tail=" + tailRoot.SourceCode() + "\n"
+        source += "Char=" + charRoot.SourceCode() + "\n"
+        source += "NumWords={:d}\n".format(len(words))
+        source += "Bits=r'''\n" + self._Base64(bits) + "'''\n"
         return source
 
     def _Encode(self, words, repeatCode, tailCode, charCode):
@@ -211,7 +211,7 @@ if __name__ == '__main__':
     print('Read {} words, {} bytes.'.format(len(words), len(text)))
 
     for algorithm in AlgorithmList:
-        compressedDataCode = 'Data = ' + algorithm.Compress(words)
+        compressedDataCode = algorithm.Compress(words)
         stubFileName = os.path.join(StubDirName, algorithm.Name() + '.py')
         with open(stubFileName, 'rt') as infile:
             stubCode = infile.read()
