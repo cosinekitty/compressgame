@@ -108,6 +108,15 @@ class Squash_Huffman:
         repeatCode = repeatRoot.MakeEncoding()
         tailCode = tailRoot.MakeEncoding()
         charCode = charRoot.MakeEncoding()
+        bits = self._Encode(words, repeatCode, tailCode, charCode)
+        source = "{'Repeat':" + repeatRoot.SourceCode() + ",\n"
+        source += "'Tail':" + tailRoot.SourceCode() + ",\n"
+        source += "'Char':" + charRoot.SourceCode() + ",\n"
+        source += "'NumWords':{:d},\n".format(len(words))
+        source += "'BitStream':r'''\n" + self._Base64(bits) + "'''}\n"
+        return source
+
+    def _Encode(self, words, repeatCode, tailCode, charCode):
         pw = ''
         bits = ''
         for w in words:
@@ -118,15 +127,9 @@ class Squash_Huffman:
             for c in tail:
                 bits += charCode[c]
             pw = w
+        return bits
 
-        source = "{'Repeat':" + repeatRoot.SourceCode() + ",\n"
-        source += "'Tail':" + tailRoot.SourceCode() + ",\n"
-        source += "'Char':" + charRoot.SourceCode() + ",\n"
-        source += "'NumWords':{:d},\n".format(len(words))
-        source += "'BitStream':r'''\n" + self._EncodeBits(bits) + "'''}\n"
-        return source
-
-    def _EncodeBits(self, bits):
+    def _Base64(self, bits):
         # Encode the 'bits' string, that contains a sequence of '0' and '1' chars,
         # into base64. Each base64 output character represents 6 bits, because 2**6 == 64.
         alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
