@@ -20,16 +20,13 @@ class Compressor:
     def _Encode(self, words, charCode):
         bits = ''
         for w in words:
-            bits += ''.join(charCode[c] for c in w)
-            bits += charCode['\n']
+            bits += ''.join(charCode[c] for c in w) + charCode['\n']
         return bits
 
     def _HuffmanCode(self, words):
         charHuff = HuffmanEncoder()
-        pw = ''
         for w in words:
             for c in w:
                 charHuff.Tally(c)
             charHuff.Tally('\n')
-            pw = w
         return charHuff.Compile()
