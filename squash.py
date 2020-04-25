@@ -66,6 +66,8 @@ if __name__ == '__main__':
     words = text.split()
     print('Read {} words, {} bytes.'.format(len(words), len(text)))
 
+    bestSize = None
+    bestSourceCode = None
     for algorithm in AlgorithmList:
         compressedDataCode = algorithm.Compress(words)
         stubFileName = os.path.join(StubDirName, algorithm.Name() + '.py')
@@ -75,11 +77,17 @@ if __name__ == '__main__':
         code = CommonHeadCode + compressedDataCode + stubCode + CommonTailCode
         with open(targetFileName, 'wt') as outfile:
             outfile.write(code)
-        print('{:9d} {:s}'.format(len(code), targetFileName))
+        size = len(code)
+        print('{:9d} {:s}'.format(size, targetFileName))
         result = subprocess.run([sys.executable, targetFileName], check=True, stdout=subprocess.PIPE)
         check = result.stdout.decode('utf-8')
         if check != text:
             print('FAILURE: Generated text does not match original.')
             sys.exit(1)
+        if (bestSize is None) or (size < bestSize):
+            bestSize = size
+            bestSourceCode = targetFileName
 
+    print()
+    print('The winner is:', bestSourceCode)
     sys.exit(0)
