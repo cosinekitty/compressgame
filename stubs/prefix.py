@@ -29,9 +29,7 @@ def Expand():
     for w in range(NumWords):
         repeatLen = Huffman(reader, Repeat)
         tailLen = Huffman(reader, Tail)
-        w = pw[:repeatLen]
-        for _ in range(tailLen):
-            w += Huffman(reader, Char)
+        w = pw[:repeatLen] + ''.join(Huffman(reader, Char) for _ in range(tailLen))
         wlist.append(w)
         pw = w
     return '\n'.join(wlist)
