@@ -12,15 +12,6 @@ if __name__ == "__main__":
 
 #--------------------------------------------------------------------
 
-class Squash_PlainText:
-    def Name(self):
-        return 'plaintext'
-
-    def Compress(self, words):
-        return "Data = r'''" + '\n'.join(words) + "'''\n"
-
-#--------------------------------------------------------------------
-
 class HuffmanNode:
     def __init__(self, symbol, count, left, right):
         self.symbol = symbol
@@ -184,7 +175,6 @@ class Squash_Huffman:
 #--------------------------------------------------------------------
 
 AlgorithmList = [
-    Squash_PlainText(),
     Squash_Huffman()
 ]
 

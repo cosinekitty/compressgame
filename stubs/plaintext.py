@@ -1,2 +1,0 @@
-def Expand():
-    return Data
