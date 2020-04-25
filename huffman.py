@@ -1,3 +1,28 @@
+#!/usr/bin/env python3
+#
+#    MIT License
+#
+#    Copyright (c) 2020 Don Cross <cosinekitty@gmail.com>
+#
+#    Permission is hereby granted, free of charge, to any person obtaining a copy
+#    of this software and associated documentation files (the "Software"), to deal
+#    in the Software without restriction, including without limitation the rights
+#    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#    copies of the Software, and to permit persons to whom the Software is
+#    furnished to do so, subject to the following conditions:
+#
+#    The above copyright notice and this permission notice shall be included in all
+#    copies or substantial portions of the Software.
+#
+#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#    SOFTWARE.
+#
+
 class HuffmanNode:
     def __init__(self, symbol, count, left, right):
         self.symbol = symbol
@@ -41,12 +66,12 @@ class HuffmanEncoder:
         self.table = {}
 
     def Tally(self, symbol):
-        if symbol in self.table:
-            self.table[symbol] += 1
-        else:
-            self.table[symbol] = 1
+        self.table[symbol] = 1 + self.table.get(symbol, 0)
 
     def Compile(self):
+        if len(self.table) == 0:
+            raise Exception('Huffman encoder needs to have at least one symbol.')
+
         # Build a binary tree that allows us to use a variable
         # number of bits to encode each symbol based on its probability.
         # Make a list of HuffmanNodes.
@@ -56,13 +81,10 @@ class HuffmanEncoder:
         # While there is more than one node at the top of the tree,
         # keep removing the least populated pair of items and combine
         # them into a new internal node.
-        while len(tree) > 1:
+        while len(tree) != 1:
             a, b, *rest = tree
             node = HuffmanNode(None, a.count + b.count, a, b)
             tree = sorted([node] + rest)
-
-        if len(tree) != 1:
-            raise Exception('Huffman encoder has {} remaining nodes.'.format(len(tree)))
 
         # The single remaining node is the root node of the tree.
         return tree[0]
