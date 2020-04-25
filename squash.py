@@ -27,6 +27,7 @@
 import sys
 import os
 import subprocess
+import cmp_letters
 import cmp_prefix
 
 CommonHeadCode = '#!/usr/bin/env python3\n'
@@ -39,6 +40,7 @@ if __name__ == "__main__":
 #--------------------------------------------------------------------
 
 AlgorithmList = [
+    cmp_letters.Compressor(),
     cmp_prefix.Compressor()
 ]
 
