@@ -1,5 +1,5 @@
 from huffman import HuffmanEncoder
-from binary_tools import Base64
+from binary_tools import BitBuffer
 
 class Compressor:
     r'''Strategy:
@@ -18,26 +18,26 @@ class Compressor:
         repeatCode = repeatRoot.MakeEncoding()
         tailCode = tailRoot.MakeEncoding()
         charCode = charRoot.MakeEncoding()
-        bits = self._Encode(words, repeatCode, tailCode, charCode)
+        buf = self._Encode(words, repeatCode, tailCode, charCode)
         source = "Repeat=" + repeatRoot.SourceCode() + "\n"
         source += "Tail=" + tailRoot.SourceCode() + "\n"
         source += "Char=" + charRoot.SourceCode() + "\n"
         source += "NumWords={:d}\n".format(len(words))
-        source += "Bits=r'''\n" + Base64(bits) + "'''\n"
+        source += "Bits=r'''\n" + buf.Format() + "'''\n"
         return source
 
     def _Encode(self, words, repeatCode, tailCode, charCode):
         pw = ''
-        bits = ''
+        buf = BitBuffer()
         for w in words:
             prefix = self._LettersInCommon(pw, w)
-            bits += repeatCode[prefix]
+            buf.Append(repeatCode[prefix])
             tail = w[prefix:]
-            bits += tailCode[len(tail)]
+            buf.Append(tailCode[len(tail)])
             for c in tail:
-                bits += charCode[c]
+                buf.Append(charCode[c])
             pw = w
-        return bits
+        return buf
 
     def _HuffmanCodes(self, words):
         repeatHuff = HuffmanEncoder()

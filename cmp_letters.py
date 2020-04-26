@@ -1,5 +1,5 @@
 from huffman import HuffmanEncoder
-from binary_tools import Base64
+from binary_tools import BitBuffer
 
 class Compressor:
     r'''Strategy:
@@ -11,17 +11,17 @@ class Compressor:
     def Compress(self, words):
         charRoot = self._HuffmanCode(words)
         charCode = charRoot.MakeEncoding()
-        bits = self._Encode(words, charCode)
+        buf = self._Encode(words, charCode)
         source = "Char=" + charRoot.SourceCode() + "\n"
         source += "NumChars={:d}\n".format(sum(1+len(w) for w in words)-1)
-        source += "Bits=r'''\n" + Base64(bits) + "'''\n"
+        source += "Bits=r'''\n" + buf.Format() + "'''\n"
         return source
 
     def _Encode(self, words, charCode):
-        bits = ''
+        buf = BitBuffer()
         for w in words:
-            bits += ''.join(charCode[c] for c in w) + charCode['\n']
-        return bits
+            buf.Append(''.join(charCode[c] for c in w) + charCode['\n'])
+        return buf
 
     def _HuffmanCode(self, words):
         charHuff = HuffmanEncoder()
