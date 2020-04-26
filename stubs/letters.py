@@ -7,7 +7,6 @@ class BitReader:
 
     def GetNextBit(self):
         if self.nbits == 0:
-            # Load up another 6 bits from the base64 input stream
             c = self.encoded[self.position]
             self.position += 1
             self.accum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.index(c)

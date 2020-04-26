@@ -1,5 +1,5 @@
 from huffman import HuffmanEncoder
-from binary_base64 import Base64
+from binary_tools import Base64
 
 class Compressor:
     r'''Strategy:

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 #
+#   https://github.com/cosinekitty/compressgame
+#
 #    MIT License
 #
 #    Copyright (c) 2020 Don Cross <cosinekitty@gmail.com>
