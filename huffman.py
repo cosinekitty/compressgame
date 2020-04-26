@@ -37,18 +37,18 @@ class HuffmanNode:
         return self.count < other.count
 
     def MakeEncoding(self):
-        return self._MakeEncoding({}, '')
+        return self._MakeEncoding({}, 0, 0)
 
-    def _MakeEncoding(self, encoding, bitstring):
+    def _MakeEncoding(self, encoding, data, nbits):
         # Recursively visit the tree to compute the bit string for each symbol.
         # The result is a dictionary such that encoding[symbol] = bitstring,
         # where bitstring is a string containing 0 and 1 characters like '10110100'.
         if self.symbol is not None:
-            encoding[self.symbol] = bitstring
+            encoding[self.symbol] = (data, nbits)
         if self.left is not None:
-            self.left._MakeEncoding(encoding, bitstring + '0')
+            self.left._MakeEncoding(encoding, data << 1, 1+nbits)
         if self.right is not None:
-            self.right._MakeEncoding(encoding, bitstring + '1')
+            self.right._MakeEncoding(encoding, 1 | (data << 1), 1+nbits)
         return encoding
 
     def TreeTuple(self):

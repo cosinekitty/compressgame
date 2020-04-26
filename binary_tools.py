@@ -31,35 +31,32 @@ class BitBuffer:
         self.buf = bytearray()
         self.accum = 0
         self.nbits = 0
+        self.column = 0
 
-    def Append(self, text):
-        for c in text:
-            self.accum = (self.accum << 1) | '01'.index(c)
+    def Append(self, pattern):
+        data, dbits = pattern
+        while dbits > 0:
+            dbits -= 1
+            self.accum = (self.accum << 1) | (1 & (data >> dbits))
             self.nbits += 1
-            if self.nbits == 8:
-                self.buf.append(self.accum)
+            if self.nbits == 6:
+                self.buf.append(b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'[self.accum])
+                self.column += 1
+                if self.column == 80:
+                    self.buf.append(ord('\n'))
+                    self.column = 0
                 self.accum = 0
                 self.nbits = 0
 
     def Format(self):
         # Flush any remaining bits left in the accumulator.
         if self.nbits > 0:
-            self.Append('0' * (8 - self.nbits))
+            self.Append((0, (6 - self.nbits)))
 
-        # Convert to base64 encoding.
-        text = base64.b64encode(self.buf).decode()
+        # Always end on a newline.
+        if self.column > 0:
+            self.buf.append(ord('\n'))
+            self.column = 0
 
-        # Add line breaks every 80 characters.
-        width = 80
-        pos = 0
-        size = len(text)
-        output = ''
-        while pos < size:
-            if size - pos > width:
-                line = text[pos:pos+width]
-            else:
-                line = text[pos:]
-            output += line + '\n'
-            pos += len(line)
-
-        return output
+        # Convert the bytes to utf-8 text.
+        return self.buf.decode('utf-8')

@@ -20,7 +20,9 @@ class Compressor:
     def _Encode(self, words, charCode):
         buf = BitBuffer()
         for w in words:
-            buf.Append(''.join(charCode[c] for c in w) + charCode['\n'])
+            for c in w:
+                buf.Append(charCode[c])
+            buf.Append(charCode['\n'])
         return buf
 
     def _HuffmanCode(self, words):
