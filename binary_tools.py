@@ -35,18 +35,25 @@ class BitBuffer:
 
     def Append(self, pattern):
         data, dbits = pattern
-        while dbits > 0:
-            dbits -= 1
-            self.accum = (self.accum << 1) | (1 & (data >> dbits))
-            self.nbits += 1
-            if self.nbits == 6:
-                self.buf.append(b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'[self.accum])
-                self.column += 1
-                if self.column == 80:
-                    self.buf.append(ord('\n'))
-                    self.column = 0
-                self.accum = 0
-                self.nbits = 0
+        while self.nbits + dbits >= 6:
+            # We can emit a complete base64 character to represent a chunk of 6 bits.
+            grab = 6 - self.nbits
+            mask = (1 << grab) - 1
+            self.accum = (self.accum << grab) | (mask & (data >> (dbits - grab)))
+            dbits -= grab
+            self.buf.append(b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'[self.accum])
+            self.accum = 0
+            self.nbits = 0
+            self.column += 1
+            if self.column == 80:
+                self.buf.append(ord('\n'))
+                self.column = 0
+
+        # Transfer any residual data bits into the accumulator.
+        if dbits >= 0:
+            mask = (1 << dbits) - 1
+            self.accum = (self.accum << dbits) | (mask & data)
+            self.nbits += dbits
 
     def Format(self):
         # Flush any remaining bits left in the accumulator.
