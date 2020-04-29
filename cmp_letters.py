@@ -2,9 +2,6 @@ from huffman import HuffmanEncoder
 from binary_tools import BitBuffer
 
 class Compressor:
-    r'''Strategy:
-    Use Huffman encoding on the symbol set a-z and \n.
-    '''
     def Name(self):
         return 'letters'
 

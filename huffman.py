@@ -41,8 +41,8 @@ class HuffmanNode:
 
     def _MakeEncoding(self, encoding, data, nbits):
         # Recursively visit the tree to compute the bit string for each symbol.
-        # The result is a dictionary such that encoding[symbol] = bitstring,
-        # where bitstring is a string containing 0 and 1 characters like '10110100'.
+        # The result is a dictionary such that encoding[symbol] = (data, nbits),
+        # a tuple that represents the variable number of bits in the encoding.
         if self.symbol is not None:
             encoding[self.symbol] = (data, nbits)
         if self.left is not None:

@@ -2,14 +2,6 @@ from huffman import HuffmanEncoder
 from binary_tools import BitBuffer
 
 class Compressor:
-    r'''Strategy:
-        1. Figure out how much each word has in common with the previous.
-           For example, "apple" followed by "apples" has 5 letters in common.
-           We can encode "apples" as (5, "s"), meaning, repeat 5 letters from
-           the previous word, then append "s".
-        2. Use Huffman encoding on the common-letter counts.
-        3. Use Huffman encoding on the tail part of each word.
-    '''
     def Name(self):
         return 'prefix'
 
